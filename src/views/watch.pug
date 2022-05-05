@@ -1,0 +1,15 @@
+extends base.pug
+
+block head 
+    video(src="/" + videos.videoFile, controls)
+    div 
+        p=videos.description 
+        p=videos.hashtag
+        small=videos.createdAt
+        br
+        small Upload by  
+            a(href=`/users/${videos.owner._id}`)=videos.owner.username  
+    if String(videos.owner._id) === String(loggedInUser._id)
+        a(href=`${videos.id}/edit`) Edit &rarr; 
+        br
+        a(href=`${videos.id}/delete`) Delete &rarr;
