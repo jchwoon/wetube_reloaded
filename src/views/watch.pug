@@ -1,0 +1,48 @@
+extends base.pug
+
+block head 
+    div#videoContainer(data-videoId=videos._id)
+        video(src="/" + videos.videoFile)
+        div#videoControl.videoControl
+            div.videoControl__play
+                span#play.videoControl__playBtn
+                    i.fas.fa-play
+                div.videoControl__time 
+                    span#currentTime 00:00
+                    span  / 
+                    span#totalTime 00:00
+            input(type="range", value="0", step="0.1", min="0")#timeLine.videoControl__timeline
+            div.videoControl__volume
+                input(type="range", value="1" ,step="0.1" ,min="0", max="1")#volume
+                span#mute
+                        i.fas.fa-volume-up
+            div 
+                span#fullScreen
+                    i.fas.fa-expand
+
+    div.video__data
+        p.video__title=videos.title
+        small.video__owner Uploaded by 
+            a(href=`/users/${videos.owner._id}`)=videos.owner.name
+        small.video__createdAt=new Date(videos.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+            br
+        if String(videos.owner._id) === String(loggedInUser._id)
+            a(href=`${videos.id}/edit`) Edit Video &rarr;
+            br
+            a(href=`${videos.id}/delete`) Delete Video &rarr;
+    if loggedIn
+        div.video__add-comments
+            form.video__comment-form#commentForm
+                textarea(cols="30", rows="10", placeholder="Write a nice commment...")
+                button Add Comment
+    div.video__comments
+        ul
+            each comment in reverseComment 
+                li.video__comment#commentContainer(data-commentId=comment._id)
+                    i.fas.fa-comment
+                    span  #{comment.text}
+                    if String(comment.owner._id) === String(loggedInUser._id)
+                        span#deleteBtn X
+block scripts 
+    script(src="/static/js/videoPlayer.js")
+    script(src="/static/js/videoComment.js") 
